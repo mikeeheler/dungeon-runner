@@ -1,0 +1,117 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://util/Hurtbox.tscn" type="PackedScene" id=1]
+[ext_resource path="res://util/Hitbox.tscn" type="PackedScene" id=2]
+[ext_resource path="res://assets/textures/sprite-sheet.png" type="Texture" id=3]
+[ext_resource path="res://entities/big_zombie.gd" type="Script" id=4]
+
+[sub_resource type="StreamTexture" id=4]
+load_path = "res://.import/0x72_DungeonTilesetII_v1.3.png-7e27946fb2d62a77aa808689d04887f4.stex"
+
+[sub_resource type="CapsuleShape2D" id=8]
+radius = 3.0
+height = 10.0
+
+[sub_resource type="Animation" id=5]
+resource_name = "idle"
+length = 0.8
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("BigZombieSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 0, 1, 2, 3 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("WeaponPivot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, -10 ), Vector2( 0, -8 ) ]
+}
+
+[sub_resource type="Animation" id=6]
+resource_name = "run"
+length = 0.4
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("BigZombieSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 4, 5, 6, 7 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("WeaponPivot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, -10 ), Vector2( 0, -8 ) ]
+}
+
+[sub_resource type="CapsuleShape2D" id=7]
+radius = 9.0
+height = 6.0
+
+[node name="BigZombie" type="Node2D"]
+script = ExtResource( 4 )
+
+[node name="BigZombieSprite" type="Sprite" parent="."]
+position = Vector2( -16, -34 )
+texture = SubResource( 4 )
+centered = false
+hframes = 8
+frame = 4
+region_enabled = true
+region_rect = Rect2( 16, 270, 256, 34 )
+
+[node name="WeaponPivot" type="Node2D" parent="."]
+position = Vector2( 0, -10 )
+
+[node name="WeaponSprite" type="Sprite" parent="WeaponPivot"]
+position = Vector2( 14, -8 )
+texture = ExtResource( 3 )
+region_enabled = true
+region_rect = Rect2( 323, 57, 10, 22 )
+
+[node name="WeaponHitbox" parent="WeaponPivot" instance=ExtResource( 2 )]
+position = Vector2( 14, -11 )
+
+[node name="CollisionShape2D" parent="WeaponPivot/WeaponHitbox" index="0"]
+shape = SubResource( 8 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "idle"
+anims/idle = SubResource( 5 )
+anims/run = SubResource( 6 )
+
+[node name="Hurtbox" parent="." instance=ExtResource( 1 )]
+
+[node name="CollisionShape2D" parent="Hurtbox" index="0"]
+position = Vector2( 0, -10 )
+shape = SubResource( 7 )
+
+[editable path="WeaponPivot/WeaponHitbox"]
+
+[editable path="Hurtbox"]

@@ -29,6 +29,7 @@ onready var interactRay = $Interaction
 
 func _physics_process(_delta):
     velocity = move_and_slide(velocity)
+    interactRay.cast_to = look_direction * 16
 
 
 func _process(delta):
@@ -53,11 +54,11 @@ func _process(delta):
         elif direction.x > 0:
             _set_facing(FACING_RIGHT)
         velocity = velocity.move_toward(direction * MAX_SPEED, ACCELERATION * delta)
-        
+
     match move_state:
         STANDING:
             if not velocity.is_equal_approx(Vector2.ZERO):
-                move_state = WALKING 
+                move_state = WALKING
         WALKING:
             if velocity.length() >= RUN_SPEED:
                 move_state = RUNNING
@@ -91,7 +92,7 @@ func _unhandled_input(event):
 func _handle_interact():
     if not interactRay.is_colliding():
         return
-        
+
     var collider = interactRay.get_collider()
     if collider.has_method("interact"):
         collider.call("interact", self)

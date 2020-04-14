@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://entities/hero.gd" type="Script" id=1]
 [ext_resource path="res://assets/textures/elf_girl.png" type="Texture" id=2]
@@ -25,7 +25,7 @@ tracks/0/keys = {
 }
 
 [sub_resource type="Animation" id=3]
-resource_name = "idle_r"
+resource_name = "run_l"
 length = 0.4
 loop = true
 tracks/0/type = "value"
@@ -38,7 +38,7 @@ tracks/0/keys = {
 "times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 0, 1, 2, 3 ]
+"values": [ 12, 13, 14, 15 ]
 }
 
 [sub_resource type="Animation" id=4]
@@ -58,42 +58,98 @@ tracks/0/keys = {
 "values": [ 4, 5, 6, 7 ]
 }
 
-[sub_resource type="AnimationNodeAnimation" id=5]
-animation = "hit"
+[sub_resource type="Animation" id=5]
+resource_name = "walk_l"
+length = 0.4
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 9, 10, 11, 12 ]
+}
 
-[sub_resource type="AnimationNodeAnimation" id=6]
-animation = "idle_r"
+[sub_resource type="Animation" id=6]
+length = 0.4
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3 ]
+}
 
 [sub_resource type="AnimationNodeAnimation" id=7]
+animation = "hit"
+
+[sub_resource type="AnimationNodeAnimation" id=8]
+animation = "run_l"
+
+[sub_resource type="AnimationNodeAnimation" id=9]
 animation = "run_r"
 
-[sub_resource type="AnimationNodeStateMachineTransition" id=8]
-switch_mode = 2
+[sub_resource type="AnimationNodeAnimation" id=10]
+animation = "walk_l"
 
-[sub_resource type="AnimationNodeStateMachineTransition" id=9]
-switch_mode = 2
-
-[sub_resource type="AnimationNodeStateMachineTransition" id=10]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id=11]
+[sub_resource type="AnimationNodeAnimation" id=11]
+animation = "walk_r"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=12]
+switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=13]
+switch_mode = 2
 
-[sub_resource type="AnimationNodeStateMachine" id=14]
-states/hit/node = SubResource( 5 )
-states/hit/position = Vector2( 595, 54 )
-states/idle/node = SubResource( 6 )
-states/idle/position = Vector2( 430, 40 )
-states/run/node = SubResource( 7 )
-states/run/position = Vector2( 499, 190 )
-transitions = [ "idle", "run", SubResource( 8 ), "run", "idle", SubResource( 9 ), "idle", "hit", SubResource( 10 ), "hit", "idle", SubResource( 11 ), "hit", "run", SubResource( 12 ), "run", "hit", SubResource( 13 ) ]
-start_node = "idle"
+[sub_resource type="AnimationNodeStateMachineTransition" id=14]
 
-[sub_resource type="AnimationNodeStateMachinePlayback" id=15]
+[sub_resource type="AnimationNodeStateMachineTransition" id=15]
 
-[sub_resource type="RectangleShape2D" id=16]
+[sub_resource type="AnimationNodeStateMachineTransition" id=16]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=17]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=18]
+switch_mode = 1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=19]
+switch_mode = 1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=20]
+switch_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=21]
+switch_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id=22]
+states/hit_r/node = SubResource( 7 )
+states/hit_r/position = Vector2( 595, 54 )
+states/run_l/node = SubResource( 8 )
+states/run_l/position = Vector2( 253, 245 )
+states/run_r/node = SubResource( 9 )
+states/run_r/position = Vector2( 499, 190 )
+states/walk_l/node = SubResource( 10 )
+states/walk_l/position = Vector2( 277, 54 )
+states/walk_r/node = SubResource( 11 )
+states/walk_r/position = Vector2( 430, 40 )
+transitions = [ "walk_r", "run_r", SubResource( 12 ), "run_r", "walk_r", SubResource( 13 ), "walk_r", "hit_r", SubResource( 14 ), "hit_r", "walk_r", SubResource( 15 ), "hit_r", "run_r", SubResource( 16 ), "run_r", "hit_r", SubResource( 17 ), "walk_l", "walk_r", SubResource( 18 ), "walk_r", "walk_l", SubResource( 19 ), "walk_l", "run_l", SubResource( 20 ), "run_l", "walk_l", SubResource( 21 ) ]
+start_node = "walk_r"
+graph_offset = Vector2( 0, -88.8134 )
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=23]
+
+[sub_resource type="RectangleShape2D" id=24]
 extents = Vector2( 7, 2 )
 
 [node name="FemaleElfHero" type="KinematicBody2D"]
@@ -111,19 +167,22 @@ position = Vector2( 0, -14 )
 texture = ExtResource( 2 )
 vframes = 2
 hframes = 9
+frame = 5
 region_rect = Rect2( 128, 4, 144, 28 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-autoplay = "idle_r"
+autoplay = "walk_r"
 anims/hit_r = SubResource( 2 )
-anims/idle_r = SubResource( 3 )
+anims/run_l = SubResource( 3 )
 anims/run_r = SubResource( 4 )
+anims/walk_l = SubResource( 5 )
+anims/walk_r = SubResource( 6 )
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
-tree_root = SubResource( 14 )
+tree_root = SubResource( 22 )
 anim_player = NodePath("../AnimationPlayer")
 active = true
-parameters/playback = SubResource( 15 )
+parameters/playback = SubResource( 23 )
 
 [node name="TriggerArea" type="Area2D" parent="."]
 collision_layer = 2
@@ -131,7 +190,7 @@ collision_mask = 8
 
 [node name="TriggerShape" type="CollisionShape2D" parent="TriggerArea"]
 position = Vector2( 0, -3 )
-shape = SubResource( 16 )
+shape = SubResource( 24 )
 
 [node name="Interaction" type="RayCast2D" parent="."]
 position = Vector2( 0, -3 )

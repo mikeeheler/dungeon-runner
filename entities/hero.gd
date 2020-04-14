@@ -21,9 +21,11 @@ const MAX_SPEED = 100
 const RUN_SPEED = 50
 
 var _facing = FACING_RIGHT setget _set_facing
-var look_direction = Vector2.RIGHT
-var move_state = STANDING
-var velocity = Vector2.ZERO
+var _look_direction = Vector2.RIGHT
+var _move_state = STANDING
+var _run_anim = "run_r"
+var _velocity = Vector2.ZERO
+var _walk_anim = "walk_r"
 
 onready var animationPlayer = $AnimationPlayer
 onready var interactRay = $Interaction
@@ -31,8 +33,8 @@ onready var animStateMachine = $AnimationTree.get("parameters/playback")
 
 
 func _physics_process(_delta):
-    velocity = move_and_slide(velocity)
-    interactRay.cast_to = look_direction * INTERACT_RAY_DIST
+    _velocity = move_and_slide(_velocity)
+    interactRay.cast_to = _look_direction * INTERACT_RAY_DIST
 
 
 func _process(delta):
@@ -48,30 +50,30 @@ func _process(delta):
         direction += Vector2.UP
 
     if direction.is_equal_approx(Vector2.ZERO):
-        velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
+        _velocity = _velocity.move_toward(Vector2.ZERO, FRICTION * delta)
     else:
         direction = direction.normalized()
-        look_direction = direction
+        _look_direction = direction
         if direction.x < 0:
             _set_facing(FACING_LEFT)
         elif direction.x > 0:
             _set_facing(FACING_RIGHT)
-        velocity = velocity.move_toward(direction * MAX_SPEED, ACCELERATION * delta)
+        _velocity = _velocity.move_toward(direction * MAX_SPEED, ACCELERATION * delta)
 
-    match move_state:
+    match _move_state:
         STANDING:
-            if not velocity.is_equal_approx(Vector2.ZERO):
-                move_state = WALKING
+            if not _velocity.is_equal_approx(Vector2.ZERO):
+                _move_state = WALKING
         WALKING:
-            if velocity.length() >= RUN_SPEED:
-                move_state = RUNNING
-                animStateMachine.travel("run")
-            elif velocity.is_equal_approx(Vector2.ZERO):
-                move_state = STANDING
+            if _velocity.length() >= RUN_SPEED:
+                _move_state = RUNNING
+                animStateMachine.travel(_run_anim)
+            elif _velocity.is_equal_approx(Vector2.ZERO):
+                _move_state = STANDING
         RUNNING:
-            if velocity.length() < RUN_SPEED:
-                move_state = WALKING
-                animStateMachine.travel("idle")
+            if _velocity.length() < RUN_SPEED:
+                _move_state = WALKING
+                animStateMachine.travel(_walk_anim)
 
 
 func _set_facing(facing_dir):
@@ -83,7 +85,12 @@ func _set_facing(facing_dir):
 
 
 func _on_facing_changed(facing):
-    $Sprite.flip_h = facing == FACING_LEFT
+    if facing == FACING_LEFT:
+        _run_anim = "run_l"
+        _walk_anim = "walk_l"
+    elif facing == FACING_RIGHT:
+        _run_anim = "run_r"
+        _walk_anim = "walk_r"
 
 
 func _unhandled_input(event):

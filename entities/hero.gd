@@ -16,6 +16,7 @@ enum {
 
 const ACCELERATION = 400
 const FRICTION = 400
+const INTERACT_RAY_DIST = 8
 const MAX_SPEED = 100
 const RUN_SPEED = 50
 
@@ -26,10 +27,12 @@ var velocity = Vector2.ZERO
 
 onready var animationPlayer = $AnimationPlayer
 onready var interactRay = $Interaction
+onready var animStateMachine = $AnimationTree.get("parameters/playback")
+
 
 func _physics_process(_delta):
     velocity = move_and_slide(velocity)
-    interactRay.cast_to = look_direction * 16
+    interactRay.cast_to = look_direction * INTERACT_RAY_DIST
 
 
 func _process(delta):
@@ -62,13 +65,13 @@ func _process(delta):
         WALKING:
             if velocity.length() >= RUN_SPEED:
                 move_state = RUNNING
-                animationPlayer.play("run")
+                animStateMachine.travel("run")
             elif velocity.is_equal_approx(Vector2.ZERO):
                 move_state = STANDING
         RUNNING:
             if velocity.length() < RUN_SPEED:
                 move_state = WALKING
-                animationPlayer.play("idle")
+                animStateMachine.travel("idle")
 
 
 func _set_facing(facing_dir):

@@ -1,13 +1,14 @@
 [gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://entities/hero.gd" type="Script" id=1]
-[ext_resource path="res://assets/textures/sprite-sheet.png" type="Texture" id=2]
+[ext_resource path="res://assets/textures/elf_girl.png" type="Texture" id=2]
 
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 2.0
 height = 10.0
 
 [sub_resource type="Animation" id=2]
+resource_name = "hit_r"
 length = 0.1
 loop = true
 tracks/0/type = "value"
@@ -24,6 +25,7 @@ tracks/0/keys = {
 }
 
 [sub_resource type="Animation" id=3]
+resource_name = "idle_r"
 length = 0.4
 loop = true
 tracks/0/type = "value"
@@ -40,6 +42,7 @@ tracks/0/keys = {
 }
 
 [sub_resource type="Animation" id=4]
+resource_name = "run_r"
 length = 0.4
 loop = true
 tracks/0/type = "value"
@@ -55,20 +58,22 @@ tracks/0/keys = {
 "values": [ 4, 5, 6, 7 ]
 }
 
-[sub_resource type="AnimationNodeAnimation" id=6]
+[sub_resource type="AnimationNodeAnimation" id=5]
 animation = "hit"
 
-[sub_resource type="AnimationNodeAnimation" id=7]
-animation = "idle"
+[sub_resource type="AnimationNodeAnimation" id=6]
+animation = "idle_r"
 
-[sub_resource type="AnimationNodeAnimation" id=8]
-animation = "run"
+[sub_resource type="AnimationNodeAnimation" id=7]
+animation = "run_r"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=8]
+switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=9]
 switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=10]
-switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=11]
 
@@ -76,21 +81,19 @@ switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=13]
 
-[sub_resource type="AnimationNodeStateMachineTransition" id=14]
-
-[sub_resource type="AnimationNodeStateMachine" id=15]
-states/hit/node = SubResource( 6 )
-states/hit/position = Vector2( 592, 54 )
-states/idle/node = SubResource( 7 )
-states/idle/position = Vector2( 430, 39 )
-states/run/node = SubResource( 8 )
+[sub_resource type="AnimationNodeStateMachine" id=14]
+states/hit/node = SubResource( 5 )
+states/hit/position = Vector2( 595, 54 )
+states/idle/node = SubResource( 6 )
+states/idle/position = Vector2( 430, 40 )
+states/run/node = SubResource( 7 )
 states/run/position = Vector2( 499, 190 )
-transitions = [ "idle", "run", SubResource( 9 ), "run", "idle", SubResource( 10 ), "idle", "hit", SubResource( 11 ), "hit", "idle", SubResource( 12 ), "hit", "run", SubResource( 13 ), "run", "hit", SubResource( 14 ) ]
+transitions = [ "idle", "run", SubResource( 8 ), "run", "idle", SubResource( 9 ), "idle", "hit", SubResource( 10 ), "hit", "idle", SubResource( 11 ), "hit", "run", SubResource( 12 ), "run", "hit", SubResource( 13 ) ]
 start_node = "idle"
 
-[sub_resource type="AnimationNodeStateMachinePlayback" id=16]
+[sub_resource type="AnimationNodeStateMachinePlayback" id=15]
 
-[sub_resource type="RectangleShape2D" id=5]
+[sub_resource type="RectangleShape2D" id=16]
 extents = Vector2( 7, 2 )
 
 [node name="FemaleElfHero" type="KinematicBody2D"]
@@ -106,22 +109,21 @@ shape = SubResource( 1 )
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 0, -14 )
 texture = ExtResource( 2 )
+vframes = 2
 hframes = 9
-frame = 2
-region_enabled = true
 region_rect = Rect2( 128, 4, 144, 28 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-autoplay = "idle"
-anims/hit = SubResource( 2 )
-anims/idle = SubResource( 3 )
-anims/run = SubResource( 4 )
+autoplay = "idle_r"
+anims/hit_r = SubResource( 2 )
+anims/idle_r = SubResource( 3 )
+anims/run_r = SubResource( 4 )
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
-tree_root = SubResource( 15 )
+tree_root = SubResource( 14 )
 anim_player = NodePath("../AnimationPlayer")
 active = true
-parameters/playback = SubResource( 16 )
+parameters/playback = SubResource( 15 )
 
 [node name="TriggerArea" type="Area2D" parent="."]
 collision_layer = 2
@@ -129,9 +131,10 @@ collision_mask = 8
 
 [node name="TriggerShape" type="CollisionShape2D" parent="TriggerArea"]
 position = Vector2( 0, -3 )
-shape = SubResource( 5 )
+shape = SubResource( 16 )
 
 [node name="Interaction" type="RayCast2D" parent="."]
+position = Vector2( 0, -3 )
 cast_to = Vector2( 0, 8 )
 collision_mask = 32
 collide_with_areas = true
